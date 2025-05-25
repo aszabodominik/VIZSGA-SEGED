@@ -1,0 +1,45 @@
+LINUX
+
+sudo bash
+apt update 
+apt install apache2 -y
+cd /var/www/html
+mv index.html index_orig.html
+nano index.html
+
+<html>
+<head>
+<meta charset="utf8">
+</head>
+<body>
+<p>Hello World 2025. 04. 03. Készítette: Szabó Dominik</p>
+</body>
+</html>
+
+NSG
+inbound
+add
+alsó 80 
+azt ennyi
+Public ip azt jön az oldal
+dns name katt
+beirod amit kell
+save
+kimásol a dns namet 
+aztán azzal is bejön az oldal
+
+WINDOWS
+
+Install-WindowsFeature web-server -IncludeManagementTools
+cd c:\inetpub\wwwroot
+notepad index.html
+
+<html>
+<head>
+<meta charset="utf8">
+</head>
+<body>
+<p>Hello World 2025  Készítette: Szabó Dominik</p>
+</body>
+</html>
+
