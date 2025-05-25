@@ -1,0 +1,145 @@
+FONTOS A LINUX SZERVER FELADATHOZ
+
+[SSH legyen ROOT-ként is használható]
+
+sudo nano /etc/ssh/sshd_config
+
+PermitRootLogin yes
+
+sudo systemctl restart ssh
+
+[PHP webszerver melynek változtatjuk a mappáját]
+
+sudo apt update
+sudo apt install apache2 -y
+
+sudo apt install php libapache2-mod-php -y
+
+sudo nano /etc/apache2/sites-available/000-default.conf
+
+DocumentRoot /WEBDATA/html
+
+sudo mkdir -p /WEBDATA/html
+sudo chown -R www-data:www-data /WEBDATA/html
+sudo chmod -R 755 /WEBDATA/html
+
+sudo systemctl restart apache2
+
+
+[Weboldal készítés ebbe a mappába]
+
+cd /WEBDATA/html
+
+nano index.html
+
+EXAMPLE:
+
+<html>
+<head>
+<meta charset="utf8">
+</head>
+<body>
+<p>Készítette: Szabó Dominik</p>
+</body>
+</html>
+
+
+[KEA DHCP szerver 10 címet oszt]
+
+sudo apt update
+sudo apt install isc-kea-dhcp4-server -y
+
+sudo nano /etc/kea/kea-dhcp4.conf
+
+{
+    "Dhcp4": {
+        "subnet4": [
+            {
+                "subnet": "192.168.1.0/24",
+                "pools": [
+                    { "pool": "192.168.1.100 - 192.168.1.110" },
+                ],
+                "option-data": [
+                    { "name": "routers", "data": "192.168.1.1" }
+                ]
+            }
+        ]
+    }
+}
+
+sudo systemctl restart isc-kea-dhcp4-server
+
+
+[Hozzon létre 3 felhasználót, tagja a WEBMASTER csoportnak és tudják írni/olvasni a html mappát.]
+
+sudo groupadd WEBMASTER
+
+sudo useradd user1
+sudo useradd user2
+sudo useradd user3
+
+sudo usermod -aG WEBMASTER user1
+sudo usermod -aG WEBMASTER user2
+sudo usermod -aG WEBMASTER user3
+
+sudo chown -R root:WEBMASTER /WEBDATA/html
+sudo chmod -R 775 /WEBDATA/html
+
+
+
+[DHCP cím fogadás egyik interface-en]
+
+sudo dhcpclient eth0
+
+
+[Statikus cím másik interface-en]
+
+sudo ip add add (IP/MASZ) dev eth1
+
+
+[Forgalom irányítást bekapcsolás]
+
+sudo sysctl -w net.ipv4.ip_forwarding=1
+
+
+[ISC DHCP]
+
+sudo apt install isc-dhcp-server -y
+
+nano /etc/dhcp/dhcpd.conf
+
+subnet 10.100.10.0 netmask 255.255.255.128 {
+    range 10.100.10.100 10.100.10.120;
+    option routers 10.100.10.VSZ;
+    option domain-name-servers 192.168.100.120;
+}
+
+sudo systemctl enable isc-dhcp-server
+sudo systemctl restart isc-dhcp-server
+
+[Alapértelmezett Weboldal Törlése]
+
+sudo rm /var/www/html/index.html
+
+
+
+
+WINDOWS
+
+[MEGHAJTÓ LÉTREHOZ KLIENSEKNEK]
+
+Tools
+Group Policy Management
+Saját Domain
+OU
+Create
+User, windows, drive maps
+Létrehoz mappa share és a cuccot beirjuk a locationbe
+
+
+[Home Mappa]
+
+Létrehoz egy felhasználót
+Profile
+Home Folder
+Connect:
